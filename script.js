@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const table = document.getElementById('data-table');
 
     // Генерируем случайные данные
-    const rows = getRandomNumber(5, 8); // Случайное количество строк (не больше длины массива стран)
+    const rows = getRandomNumber(5, 27); // Случайное количество строк (не больше длины массива стран)
     const data = generateRandomData(rows);
     populateTable(table, data);
 
