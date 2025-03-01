@@ -21,7 +21,7 @@ function generateRandomData(rows) {
     const data = [];
     for (let i = 0; i < rows; i++) {
         const country = uniqueCountries[i];
-        const population = getRandomNumber(100000, 20000000); // Население от 100k до 20M
+        const population = getRandomNumber(100000, 1000000); // Туристы от 100k до 1M
         data.push([country, population]);
     }
     return data;
@@ -53,8 +53,8 @@ function sortTable(columnIndex, ascending) {
         const cellA = rowA.children[columnIndex].textContent;
         const cellB = rowB.children[columnIndex].textContent;
 
-        // Преобразуем строки в числа для столбца "Население"
-        if (columnIndex === 1) { // Индекс столбца "Население"
+        // Преобразуем строки в числа для столбца "Туристы"
+        if (columnIndex === 1) { // Индекс столбца "Туристы"
             return ascending
                 ? parseFloat(cellA) - parseFloat(cellB)
                 : parseFloat(cellB) - parseFloat(cellA);
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = generateRandomData(rows);
     populateTable(table, data);
 
-    // Добавляем обработчики событий для сортировки только столбца "Население"
+    // Добавляем обработчики событий для сортировки только столбца "Туристы"
     const populationHeader = table.querySelector('th:nth-child(2)');
     const sortUp = populationHeader.querySelector('.sort:nth-child(1)');
     const sortDown = populationHeader.querySelector('.sort:nth-child(2)');
