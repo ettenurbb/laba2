@@ -58,16 +58,20 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-    padding: 10px;
+    padding: 12px;
     text-align: left;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #ecf0f1;
+    background-color: #e3f2fd;
     position: relative;
 }
 
@@ -75,11 +79,12 @@ th {
     cursor: pointer;
     margin-left: 5px;
     font-size: 12px;
-    color: #3498db;
+    color: #81d4fa;
+    transition: color 0.3s ease;
 }
 
 .sort:hover {
-    color: #2980b9;
+    color: #4fc3f7;
 }
 
 /* Уникальные стили для каждой страницы */
