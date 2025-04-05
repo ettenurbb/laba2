@@ -7,31 +7,50 @@ function getRandomNumber(min, max) {
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Меняем элементы местами
+        [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
 }
 
 // Функция для создания случайных данных
-function generateRandomData(rows) {
-    const countries = ["США", "Россия", "Китай", "Индия", "Бразилия", "Германия", "Франция", "Япония", "Австралия", "Канада", "Италия", "Испания", "Аргентина", "Мексика", "Турция", "Южная Корея", "Египет", "Великобритания", "Швеция", "Норвегия", "Иран", "Саудовская Аравия", "Таиланд", "ЮАР (Южно-Африканская Республика)", "Чили", "Польша", "Греция"];
-    const shuffledCountries = shuffleArray([...countries]); // Перемешиваем страны
-    const uniqueCountries = shuffledCountries.slice(0, rows); // Берем нужное количество уникальных стран
+function generateRandomData(rows, cols) {
+    const countries = ["США", "Россия", "Китай", "Индия", "Бразилия", "Германия", "Франция", "Япония"];
+    const shuffledCountries = shuffleArray([...countries]);
+    const uniqueCountries = shuffledCountries.slice(0, rows);
 
     const data = [];
     for (let i = 0; i < rows; i++) {
-        const country = uniqueCountries[i];
-        const population = getRandomNumber(100000, 1000000); // Туристы от 100k до 1M
-        data.push([country, population]);
+        const rowData = [uniqueCountries[i]]; // Первая колонка - страна
+        for (let j = 1; j < cols; j++) {
+            rowData.push(getRandomNumber(1, 100)); // Генерация случайных чисел
+        }
+        data.push(rowData);
     }
     return data;
 }
 
 // Функция для заполнения таблицы данными
-function populateTable(table, data) {
+function populateTable(table, data, headers) {
+    const thead = table.querySelector('thead tr');
     const tbody = table.querySelector('tbody');
-    tbody.innerHTML = ''; // Очищаем таблицу
 
+    // Очищаем заголовки и строки
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
+    // Добавляем заголовки
+    headers.forEach((headerText, index) => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+
+        if (index > 0) { // Добавляем значки сортировки только для числовых столбцов
+            th.innerHTML += ' <span class="sort">&Lambda;</span><span class="sort">V</span>';
+        }
+
+        thead.appendChild(th);
+    });
+
+    // Добавляем строки
     data.forEach(rowData => {
         const row = document.createElement('tr');
         rowData.forEach(cellData => {
@@ -53,17 +72,18 @@ function sortTable(columnIndex, ascending) {
         const cellA = rowA.children[columnIndex].textContent;
         const cellB = rowB.children[columnIndex].textContent;
 
-        // Преобразуем строки в числа для столбца "Туристы"
-        if (columnIndex === 1) { // Индекс столбца "Туристы"
-            return ascending
-                ? parseFloat(cellA) - parseFloat(cellB)
-                : parseFloat(cellB) - parseFloat(cellA);
+        // Преобразуем строки в числа для числовых столбцов
+        if (columnIndex > 0) { // Индексы числовых столбцов
+            const valueA = parseFloat(cellA);
+            const valueB = parseFloat(cellB);
+            return ascending ? valueA - valueB : valueB - valueA;
         }
 
-        return 0; // Для других столбцов сортировка не применяется
+        return ascending
+            ? cellA.localeCompare(cellB) // Для текстовых столбцов
+            : cellB.localeCompare(cellA);
     });
 
-    // Очищаем tbody и добавляем отсортированные строки
     tbody.innerHTML = '';
     rows.forEach(row => tbody.appendChild(row));
 }
@@ -72,16 +92,29 @@ function sortTable(columnIndex, ascending) {
 document.addEventListener('DOMContentLoaded', () => {
     const table = document.getElementById('data-table');
 
-    // Генерируем случайные данные
-    const rows = getRandomNumber(5, 27); // Случайное количество строк (не больше длины массива стран)
-    const data = generateRandomData(rows);
-    populateTable(table, data);
+    // Генерируем случайное количество строк и столбцов
+    const rows = getRandomNumber(5, 8); // Случайное количество строк
+    const cols = getRandomNumber(3, 5); // Случайное количество столбцов
 
-    // Добавляем обработчики событий для сортировки только столбца "Туристы"
-    const populationHeader = table.querySelector('th:nth-child(2)');
-    const sortUp = populationHeader.querySelector('.sort:nth-child(1)');
-    const sortDown = populationHeader.querySelector('.sort:nth-child(2)');
+    // Создаем заголовки
+    const headers = ["Страна"];
+    for (let i = 1; i < cols; i++) {
+        headers.push(`Характеристика ${i}`);
+    }
 
-    sortUp.addEventListener('click', () => sortTable(1, true)); // По возрастанию
-    sortDown.addEventListener('click', () => sortTable(1, false)); // По убыванию
+    // Генерируем данные
+    const data = generateRandomData(rows, cols);
+    populateTable(table, data, headers);
+
+    // Добавляем обработчики событий для сортировки
+    const headersRow = table.querySelector('thead tr');
+    headersRow.querySelectorAll('th').forEach((header, index) => {
+        if (index > 0) { // Пропускаем первый столбец ("Страна")
+            const sortUp = header.querySelector('.sort:nth-child(1)');
+            const sortDown = header.querySelector('.sort:nth-child(2)');
+
+            sortUp.addEventListener('click', () => sortTable(index, true)); // По возрастанию
+            sortDown.addEventListener('click', () => sortTable(index, false)); // По убыванию
+        }
+    });
 });
