@@ -14,7 +14,7 @@ function shuffleArray(array) {
 
 // Функция для создания случайных данных
 function generateRandomData(rows, cols) {
-    const countries = ["США", "Россия", "Китай", "Индия", "Бразилия", "Германия", "Франция", "Япония"];
+    const countries = ["США", "Россия", "Китай", "Индия", "Бразилия", "Германия", "Франция", "Япония", "Норвегия", "Канада", "Швеция", "Швейцария"];
     const shuffledCountries = shuffleArray([...countries]);
     const uniqueCountries = shuffledCountries.slice(0, rows);
 
@@ -93,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const table = document.getElementById('data-table');
 
     // Генерируем случайное количество строк и столбцов
-    const rows = getRandomNumber(5, 8); // Случайное количество строк
-    const cols = getRandomNumber(3, 5); // Случайное количество столбцов
+    const rows = getRandomNumber(3, 12); // Случайное количество строк
+    const cols = getRandomNumber(2, 7); // Случайное количество столбцов
 
     // Создаем заголовки
     const headers = ["Страна"];
